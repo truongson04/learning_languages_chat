@@ -9,6 +9,7 @@ app.get("/", (req, res) => {
   res.send("hello sơn");
 });
 await connectDb();
+app.use(express.json());
 routes(app);
 
 app.listen(PORT, () => {
