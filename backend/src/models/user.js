@@ -51,15 +51,20 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-userSchema.pre("save", async (params) => {
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 });
+userSchema.methods.comparePassword = async function (password) {
+  const isCorrect = await bcrypt.compare(password, this.password);
+  return isCorrect;
+};
 const User = mongoose.model("User", userSchema);
 // hash mật khẩu trước khi lưu vào database
 

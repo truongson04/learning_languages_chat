@@ -1,3 +1,4 @@
+import { upsertStreamUser } from "../../config/stream.js";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 
@@ -24,6 +25,12 @@ export const signup = async (req, res) => {
       password,
       profilePic: "https://i.redd.it/wqjevesqvnf91.jpg",
     });
+    await upsertStreamUser({
+      id: newUser._id.toString(),
+      name: newUser.fullName,
+      image: newUser.profilePic || "",
+    });
+    console.log(`Stream user created for ${newUser._id}`);
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -39,9 +46,73 @@ export const signup = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-export const login = (req, res) => {
-  res.send("log-in");
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Some fields is missing !" });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password !" });
+    }
+    const checkPassword = await user.comparePassword(password);
+    if (!checkPassword) {
+      return res.status(400).json({ message: "Invalid password!" });
+    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("jwt", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+    });
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
-export const signin = (req, res) => {
-  res.send("sign-in");
+export const logout = (req, res) => {
+  res.clearCookie("jwt");
+  return res.status(200).json({ message: "Logout successfully" });
+};
+export const onboard = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { fullName, bio, nativeLanguage, learningLanguage, location } =
+      req.body;
+    if (
+      !fullName ||
+      !bio ||
+      !nativeLanguage ||
+      !learningLanguage ||
+      !location
+    ) {
+      return res.status(400).json({ message: "Some fields are missing" });
+    }
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      {
+        ...req.body,
+        isOnboarded: true,
+      },
+      { new: true },
+    );
+    if (!updated) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    await upsertStreamUser({
+      id: updated._id.toString(),
+      name: updated.fullName,
+      image: updated.profilePic || "",
+    });
+    console.log(`Stream user updated for ${updated._id}`);
+    return res.status(200).json({ success: true, user: updated });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
