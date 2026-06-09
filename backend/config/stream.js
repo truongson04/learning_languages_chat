@@ -12,4 +12,11 @@ export const upsertStreamUser = async function (userData) {
     console.log(error);
   }
 };
-export const genStreamToken = async function name(userId) {};
+export const genStreamToken = async function name(userId) {
+  try {
+    const stringId = userId.toString();
+    return streamClient.createToken(stringId);
+  } catch (error) {
+    console.log(error);
+  }
+};
