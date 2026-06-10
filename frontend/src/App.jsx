@@ -7,29 +7,27 @@ import CallPage from "./pages/CallPage";
 import ChatPage from "./pages/ChatPage";
 import OnBoardingPage from "./pages/OnboardingPage";
 import { toast, Toaster } from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import client from "./config/axios.js";
+
+import useAuthUser from "./hooks/useAuthUser.js";
+import Loader from "./components/Loader.jsx";
 
 export default function App() {
-  const {
-    data: authData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: async (params) => {
-      const res = await client.get("/auth/me");
-      return res.data;
-    },
-  });
-  const authUser = authData?.user;
+  const { isLoading, authUser } = useAuthUser();
+
   return (
     <>
       <div data-theme="retro" className="h-screen">
+        {isLoading && <Loader />}
         <Routes>
           <Route
             path="/"
-            element={authUser ? <HomePage /> : <Navigate to="/login" />}
+            element={
+              authUser && authUser.isOnboarded ? (
+                <HomePage />
+              ) : (
+                <Navigate to={authUser ? "/onboarding" : "/login"} />
+              )
+            }
           />
           <Route
             path="/signup"
@@ -53,7 +51,17 @@ export default function App() {
           />
           <Route
             path="/onboarding"
-            element={authUser ? <OnBoardingPage /> : <Navigate to="/login" />}
+            element={
+              authUser ? (
+                authUser.isOnboarded ? (
+                  <Navigate to="/" />
+                ) : (
+                  <OnBoardingPage />
+                )
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
         </Routes>
         <Toaster />
