@@ -1,9 +1,8 @@
 import { useState } from "react";
 import logoHanu from "/logo hanu.png";
 import { Link } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { signup } from "../config/api.js";
+import useSignUp from "../hooks/useSignUp.js";
 
 export default function SignUpPage() {
   const [signupData, setSignUpData] = useState({
@@ -11,16 +10,11 @@ export default function SignUpPage() {
     email: "",
     password: "",
   });
-  const queryClient = useQueryClient();
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: signup,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-    },
-  });
+
+  const { signUpMutate, isPending, error } = useSignUp();
   const handleSignUp = (e) => {
     e.preventDefault();
-    mutate(signupData);
+    signUpMutate(signupData);
   };
   return (
     <div

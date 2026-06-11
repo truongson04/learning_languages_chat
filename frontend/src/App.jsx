@@ -31,11 +31,27 @@ export default function App() {
           />
           <Route
             path="/signup"
-            element={authUser ? <Navigate to="/" /> : <SignUpPage />}
+            element={
+              authUser ? (
+                <Navigate to={authUser.isOnboarded ? "/" : "/onboarding"} />
+              ) : (
+                <SignUpPage />
+              )
+            }
           />
           <Route
             path="/login"
-            element={authUser ? <Navigate to="/" /> : <LoginPage />}
+            element={
+              authUser ? (
+                authUser.isOnboarded ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Navigate to="/onboarding" />
+                )
+              ) : (
+                <LoginPage />
+              )
+            }
           />
           <Route
             path="/notifications"

@@ -12,3 +12,7 @@ export const onboarding = async (userData) => {
   const res = await client.post("/auth/onboarding", userData);
   return res.data;
 };
+export const login = async (userData) => {
+  const res = await client.post("/auth/login", userData);
+  return res.data;
+};
