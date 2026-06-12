@@ -10,6 +10,7 @@ import { toast, Toaster } from "react-hot-toast";
 
 import useAuthUser from "./hooks/useAuthUser.js";
 import Loader from "./components/Loader.jsx";
+import Layout from "./components/Layout.jsx";
 
 export default function App() {
   const { isLoading, authUser } = useAuthUser();
@@ -23,7 +24,9 @@ export default function App() {
             path="/"
             element={
               authUser && authUser.isOnboarded ? (
-                <HomePage />
+                <Layout>
+                  <HomePage />
+                </Layout>
               ) : (
                 <Navigate to={authUser ? "/onboarding" : "/login"} />
               )
