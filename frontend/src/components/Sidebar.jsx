@@ -52,7 +52,7 @@ export default function Sidebar() {
             <p className="font-semibold text-sm"> {authUser?.fullName}</p>
             <p className="text-xs text-success flex flex-row items-center gap-1">
               <span className="size-2 rounded-full bg-success inline-block"></span>
-              <p>Online</p>
+              <span className="block text-primary">Online</span>
             </p>
           </div>
         </div>

@@ -4,11 +4,11 @@ import User from "../models/user.js";
 export const getRecommended = async (req, res) => {
   try {
     const currentUser = req.user;
-    const recommendedList = User.find({
+    const recommendedList = await User.find({
       $and: [
         { _id: { $ne: currentUser._id } }, // not current user
         { _id: { $nin: currentUser.friends } }, // not in the user friend list
-        { isOnBoarded: true },
+        { isOnboarded: true },
       ],
     });
     return res.status(200).json(recommendedList);
@@ -36,6 +36,7 @@ export const sendFriendRequest = async (req, res) => {
     const currentId = req.user._id;
     const recipientId = req.params.id;
     const checkRecipient = await User.findOne({ _id: recipientId });
+
     if (!checkRecipient) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -43,7 +44,7 @@ export const sendFriendRequest = async (req, res) => {
       return res.status(400).json({ message: "Cannot send friend request" });
     }
     // kiểm tra yêu cầu đã có chưa
-    const request = FriendRequest.findOne({
+    const request = await FriendRequest.findOne({
       $or: [
         { sender: currentId, recipient: recipientId },
         { sender: recipientId, recipient: currentId },
@@ -52,7 +53,7 @@ export const sendFriendRequest = async (req, res) => {
     if (request) {
       return res.status(400).json({ message: "Request has already exits" });
     }
-    const newRequest = FriendRequest.create({
+    const newRequest = await FriendRequest.create({
       sender: currentId,
       recipient: recipientId,
     });
