@@ -1,3 +1,49 @@
+import { PaletteIcon } from "lucide-react";
+import useThemeStore from "../store/useThemeStore";
+import { THEMES } from "../constants/constants";
+
 export default function ThemeSelector() {
-  return <div>Theme selector</div>;
+  const { theme, setTheme } = useThemeStore();
+  return (
+    <div className="dropdown dropdown-end">
+      <button className="btn btn-ghost btn-circle" tabIndex={0}>
+        <PaletteIcon className="size-5" />
+      </button>
+      <div
+        tabIndex={0}
+        className="dropdown-content mt-2 p-1 shadow-2xl bg-base-200 backdrop-blur-lg rounded-2xl w-56 border border-e-base-content/10 max-h-80 overflow-y-auto"
+      >
+        <div className="space-y-1 ">
+          {THEMES.map((themeColor) => {
+            return (
+              <button
+                key={themeColor.name}
+                className={`w-full px-4 py-3 rounded-full flex items-center gap-3 transition-colors ${theme == themeColor.name ? "bg-primary/10 text-primary" : "hover:bg-base-content/5"}`}
+                onClick={() => {
+                  if (theme === themeColor.name) {
+                    setTheme("retro");
+                    return;
+                  }
+                  setTheme(themeColor.name);
+                }}
+              >
+                {" "}
+                <PaletteIcon className="size-4" />
+                <span className="text-sm font-medium">{themeColor.label}</span>
+                <div className="ml-auto flex gap-1">
+                  {themeColor.colors.map((color, i) => {
+                    <span
+                      key={i}
+                      className="size-2 rounded-full"
+                      style={{ backgroundColor: color }}
+                    ></span>;
+                  })}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }

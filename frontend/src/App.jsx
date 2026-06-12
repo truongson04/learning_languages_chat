@@ -11,14 +11,18 @@ import { toast, Toaster } from "react-hot-toast";
 import useAuthUser from "./hooks/useAuthUser.js";
 import Loader from "./components/Loader.jsx";
 import Layout from "./components/Layout.jsx";
+import useThemeStore from "./store/useThemeStore.js";
 
 export default function App() {
   const { isLoading, authUser } = useAuthUser();
+  const { theme } = useThemeStore();
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
-      <div data-theme="retro" className="h-screen">
-        {isLoading && <Loader />}
+      <div data-theme={theme} className="h-screen">
         <Routes>
           <Route
             path="/"
