@@ -62,7 +62,15 @@ export default function App() {
           />
           <Route
             path="/notifications"
-            element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
+            element={
+              authUser && authUser.isOnboarded ? (
+                <Layout showSideBar={true}>
+                  <NotificationPage />
+                </Layout>
+              ) : (
+                <Navigate to={!authUser ? "/login" : "/onboarding"} />
+              )
+            }
           />
           <Route
             path="/call"

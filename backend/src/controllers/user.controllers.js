@@ -70,7 +70,7 @@ export const acceptFriendRequest = async (req, res) => {
     return res.status(400).json({ message: "Invalid request" });
   }
   // check they are actually the recipient
-  if (request.recipient.toString() !== req.user._id) {
+  if (request.recipient.toString() !== req.user._id.toString()) {
     return res.status(403).json({ message: "You are not allowed to do this" });
   }
   request.status = "accepted";

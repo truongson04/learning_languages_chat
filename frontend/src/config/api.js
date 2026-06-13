@@ -41,3 +41,11 @@ export const sendFriendRequest = async (userId) => {
   const res = await client.post(`/user/friend-request/${userId}`);
   return res.data;
 };
+export const getFriendRequest = async (params) => {
+  const res = await client.get("user/friend-request");
+  return res.data;
+};
+export const acceptFriendRequest = async (requestId) => {
+  const res = await client.put(`/user/friend-request/accept/${requestId}`);
+  return res.data;
+};
