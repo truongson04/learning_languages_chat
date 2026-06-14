@@ -6,10 +6,18 @@ export default function FriendCard({ friend }) {
     <div className="card bg-base-200 hover:shadow-md transition-shadow">
       <div className="card-body p-4 ">
         <div className="flex items-center gap-3 mb-3 ">
-          <div className="avatar size-12">
-            <img src={friend.profilePic} />
-            <h3 className="font-semibold truncate">{friend.fullName}</h3>
+          <div className="flex flex-col gap-1">
+            <div className="size-12 avatar rounded-full overflow-hidden border border-primary-700  ">
+              <img
+                src={friend.profilePic}
+                className=" object-cover size-full"
+              />
+            </div>
+            <h3 className="font-semibold text-sm truncate w-full text-center">
+              {friend.fullName}
+            </h3>
           </div>
+
           <div className="flex flex-wrap gap-1.5 mb-3">
             <span className="badge badge-secondary text-xs">
               {" "}
@@ -21,7 +29,7 @@ export default function FriendCard({ friend }) {
               Learning:{friend.learningLanguage}
             </span>
           </div>
-          <Link to={`/chat${friend._id}`} className="btn btn-outline w-full">
+          <Link to={`/chat/${friend._id}`} className="btn btn-outline ">
             Message
           </Link>
         </div>

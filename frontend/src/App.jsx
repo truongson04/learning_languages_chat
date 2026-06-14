@@ -73,12 +73,26 @@ export default function App() {
             }
           />
           <Route
-            path="/call"
-            element={authUser ? <CallPage /> : <Navigate to="/login" />}
+            path="/call/:id"
+            element={
+              authUser && authUser.isOnboarded ? (
+                <CallPage />
+              ) : (
+                <Navigate to={!authUser ? "/login" : "/onboarding"} />
+              )
+            }
           />
           <Route
-            path="/chat"
-            element={authUser ? <ChatPage /> : <Navigate to="/login" />}
+            path="/chat/:id"
+            element={
+              authUser && authUser.isOnboarded ? (
+                <Layout showSideBar={false}>
+                  <ChatPage />
+                </Layout>
+              ) : (
+                <Navigate to={!authUser ? "/login" : "onboarding"} />
+              )
+            }
           />
           <Route
             path="/onboarding"

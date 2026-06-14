@@ -49,3 +49,7 @@ export const acceptFriendRequest = async (requestId) => {
   const res = await client.put(`/user/friend-request/accept/${requestId}`);
   return res.data;
 };
+export const getStreamToken = async (params) => {
+  const res = await client.get("/chat/stream-token");
+  return res.data;
+};

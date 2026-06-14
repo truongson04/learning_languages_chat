@@ -2,7 +2,7 @@ import { genStreamToken } from "../../config/stream.js";
 
 export const getStreamToken = async (req, res) => {
   try {
-    const token = genStreamToken(req.user._id);
+    const token = await genStreamToken(req.user._id);
     return res.status(200).json({ token });
   } catch (error) {
     console.log(error);
