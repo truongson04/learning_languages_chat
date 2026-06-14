@@ -1,17 +1,22 @@
 import { Link } from "react-router";
 import GetFlag from "../helper/GetFlag";
+import useSocketStore from "../store/useSocketStore";
 
 export default function FriendCard({ friend }) {
+  const { onlineUsers } = useSocketStore();
+  const isOnline = onlineUsers.includes(friend._id);
   return (
     <div className="card bg-base-200 hover:shadow-md transition-shadow">
       <div className="card-body p-4 ">
         <div className="flex items-center gap-3 mb-3 ">
           <div className="flex flex-col gap-1">
-            <div className="size-12 avatar rounded-full overflow-hidden border border-primary-700  ">
-              <img
-                src={friend.profilePic}
-                className=" object-cover size-full"
-              />
+            <div className={`avatar ${isOnline ? "online" : ""}`}>
+              <div className="w-12 rounded-full overflow-hidden border border-primary-700">
+                <img
+                  src={friend.profilePic}
+                  className="object-cover size-full"
+                />
+              </div>
             </div>
             <h3 className="font-semibold text-sm truncate w-full text-center">
               {friend.fullName}

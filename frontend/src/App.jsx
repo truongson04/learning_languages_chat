@@ -6,16 +6,28 @@ import NotificationPage from "./pages/NotificationPage";
 import CallPage from "./pages/CallPage";
 import ChatPage from "./pages/ChatPage";
 import OnBoardingPage from "./pages/OnboardingPage";
+import FriendsPage from "./pages/FriendsPage";
 import { toast, Toaster } from "react-hot-toast";
 
 import useAuthUser from "./hooks/useAuthUser.js";
 import Loader from "./components/Loader.jsx";
 import Layout from "./components/Layout.jsx";
 import useThemeStore from "./store/useThemeStore.js";
+import useSocketStore from "./store/useSocketStore.js";
+import { useEffect } from "react";
 
 export default function App() {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
+  const { connectSocket, disconnectSocket } = useSocketStore();
+
+  useEffect(() => {
+    if (authUser && authUser.isOnboarded) {
+      connectSocket(authUser._id);
+    } else {
+      disconnectSocket();
+    }
+  }, [authUser, connectSocket, disconnectSocket]);
   if (isLoading) {
     return <Loader />;
   }
@@ -30,6 +42,18 @@ export default function App() {
               authUser && authUser.isOnboarded ? (
                 <Layout>
                   <HomePage />
+                </Layout>
+              ) : (
+                <Navigate to={authUser ? "/onboarding" : "/login"} />
+              )
+            }
+          />
+          <Route
+            path="/friends"
+            element={
+              authUser && authUser.isOnboarded ? (
+                <Layout>
+                  <FriendsPage />
                 </Layout>
               ) : (
                 <Navigate to={authUser ? "/onboarding" : "/login"} />
@@ -105,6 +129,18 @@ export default function App() {
                 )
               ) : (
                 <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              authUser && authUser.isOnboarded ? (
+                <Layout>
+                  <OnBoardingPage />
+                </Layout>
+              ) : (
+                <Navigate to={authUser ? "/onboarding" : "/login"} />
               )
             }
           />

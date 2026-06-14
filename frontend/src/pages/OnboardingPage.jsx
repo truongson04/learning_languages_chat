@@ -37,7 +37,7 @@ export default function OnBoardingPage() {
       <div className="card bg-base-200 max-w-3xl shadow-xl w-full">
         <div className="card-body p-6 sm:p-8 w-full">
           <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 ">
-            Complete your profile{" "}
+            {authUser?.isOnboarded ? "Edit your profile" : "Complete your profile"}{" "}
           </h1>
           <form
             onSubmit={handleSubmit}
@@ -177,7 +177,7 @@ export default function OnBoardingPage() {
                 </>
               ) : (
                 <>
-                  <ShipWheelIcon className="size-5 mr-2" /> Complete
+                  <ShipWheelIcon className="size-5 mr-2" /> {authUser?.isOnboarded ? "Update" : "Complete"}
                 </>
               )}
             </button>

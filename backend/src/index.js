@@ -1,4 +1,5 @@
 import express from "express";
+import { app, server } from "./socket/socket.js";
 import dotenv from "dotenv";
 import routes from "./routes/index.js";
 import cookieParser from "cookie-parser";
@@ -8,7 +9,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 dotenv.config();
-const app = express();
 const PORT = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +30,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`The server is running at http://localhost:${PORT} `);
 });

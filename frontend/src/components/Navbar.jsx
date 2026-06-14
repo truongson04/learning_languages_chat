@@ -36,11 +36,13 @@ export default function NavBar() {
             </Link>
           </div>
           <ThemeSelector />
-          <div className="avatar">
-            <div className="w-9 rounded-full">
-              <img src={authUser?.profilePic} />
+          <Link to="/profile">
+            <div className="avatar cursor-pointer transition-all hover:ring-2 hover:ring-primary rounded-full">
+              <div className="w-9 rounded-full">
+                <img src={authUser?.profilePic} />
+              </div>
             </div>
-          </div>
+          </Link>
           <button className="btn btn-ghost btn-circle" onClick={logoutMutate}>
             <LogOutIcon className="size-6 text-base-content opacity-70" />
           </button>
