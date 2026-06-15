@@ -1,5 +1,7 @@
 import FriendRequest from "../models/friendRequests.js";
 import User from "../models/user.js";
+import { io, getReceiverSocketId } from "../socket/socket.js";
+
 
 export const getRecommended = async (req, res) => {
   try {
@@ -57,6 +59,17 @@ export const sendFriendRequest = async (req, res) => {
       sender: currentId,
       recipient: recipientId,
     });
+
+    // Real-time notification: Send to the recipient if they are online
+    const requestDetails = await FriendRequest.findById(newRequest._id).populate(
+      "sender",
+      "fullName profilePic nativeLanguage learningLanguage"
+    );
+    const receiverSocketId = getReceiverSocketId(recipientId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newFriendRequest", requestDetails);
+    }
+
     return res.status(201).json(newRequest);
   } catch (error) {
     console.log(error);
@@ -113,6 +126,32 @@ export const getSentFriendRequest = async (req, res) => {
       "fullName profilePic nativeLanguage learningLanguage",
     );
     return res.status(200).json({ sentRequest: requestList });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const cancelFriendRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const request = await FriendRequest.findById(requestId);
+    if (!request) {
+      return res.status(404).json({ message: "Friend request not found" });
+    }
+    if (request.sender.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "You are not authorized to cancel this request" });
+    }
+
+    await FriendRequest.findByIdAndDelete(requestId);
+
+    // Real-time notification: Notify the recipient that the request was cancelled
+    const receiverSocketId = getReceiverSocketId(request.recipient.toString());
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("friendRequestCancelled", requestId);
+    }
+
+    return res.status(200).json({ message: "Friend request cancelled successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });

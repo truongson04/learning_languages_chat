@@ -3,6 +3,7 @@ import {
   useOutGoingRequest,
   useRecommendedFriends,
   useSendRequest,
+  useCancelRequest,
 } from "../hooks/useFriends";
 
 import { Link } from "react-router-dom";
@@ -10,26 +11,28 @@ import {
   MapPinIcon,
   CheckCircleIcon,
   UserPlusIcon,
+  XCircleIcon,
 } from "lucide-react";
 
 import capitalize from "../helper/capitalize";
 import GetFlag from "../helper/GetFlag";
 
 export default function HomePage() {
-  const [outgoingRequestIds, setOutgoingRequestIds] = useState(new Set());
+  const [outgoingRequestMap, setOutgoingRequestMap] = useState({});
   const { loadingUsers, recommendedUsers } = useRecommendedFriends();
   const { outGoingFriendReqs } = useOutGoingRequest();
   const { sendRequestMutation, isPending } = useSendRequest();
+  const { cancelRequestMutation, isCancelPending } = useCancelRequest();
 
   useEffect(() => {
-    const outgoingIds = new Set();
+    const map = {};
 
     if (outGoingFriendReqs && outGoingFriendReqs.sentRequest.length > 0) {
       outGoingFriendReqs.sentRequest.forEach((request) => {
-        outgoingIds.add(request.recipient._id);
+        map[request.recipient._id] = request._id;
       });
-      setOutgoingRequestIds(outgoingIds);
     }
+    setOutgoingRequestMap(map);
   }, [outGoingFriendReqs]);
 
   return (
@@ -62,8 +65,8 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recommendedUsers?.map((user) => {
-                const checkRequestSent = outgoingRequestIds.has(user._id);
+             {recommendedUsers?.map((user) => {
+                const checkRequestSent = !!outgoingRequestMap[user._id];
 
                 return (
                   <div
@@ -105,25 +108,25 @@ export default function HomePage() {
                       {user.bio && (
                         <p className="text-sm opacity-70">{user.bio}</p>
                       )}
-                      <button
-                        className={`btn w-full mt-2 ${
-                          checkRequestSent ? "btn-disabled" : "btn-primary"
-                        } `}
-                        onClick={() => sendRequestMutation(user._id)}
-                        disabled={checkRequestSent || isPending}
-                      >
-                        {checkRequestSent ? (
-                          <>
-                            <CheckCircleIcon className="size-4 mr-2" />
-                            Request Sent
-                          </>
-                        ) : (
-                          <>
-                            <UserPlusIcon className="size-4 mr-2" />
-                            Send Friend Request
-                          </>
-                        )}
-                      </button>
+                      {checkRequestSent ? (
+                        <button
+                          className="btn btn-outline btn-error w-full mt-2"
+                          onClick={() => cancelRequestMutation(outgoingRequestMap[user._id])}
+                          disabled={isCancelPending}
+                        >
+                          <XCircleIcon className="size-4 mr-2" />
+                          Cancel Request
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-primary w-full mt-2"
+                          onClick={() => sendRequestMutation(user._id)}
+                          disabled={isPending}
+                        >
+                          <UserPlusIcon className="size-4 mr-2" />
+                          Send Friend Request
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

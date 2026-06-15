@@ -15,11 +15,24 @@ import Layout from "./components/Layout.jsx";
 import useThemeStore from "./store/useThemeStore.js";
 import useSocketStore from "./store/useSocketStore.js";
 import { useEffect } from "react";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { getStreamToken } from "./config/api.js";
+import useChatStore from "./store/useChatStore.js";
+
+
 
 export default function App() {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
-  const { connectSocket, disconnectSocket } = useSocketStore();
+  const { connectSocket, disconnectSocket, socket } = useSocketStore();
+  const queryClient = useQueryClient();
+  const { initializeChat, disconnectChat } = useChatStore();
+
+  const { data: tokenData } = useQuery({
+    queryKey: ["streamToken"],
+    queryFn: getStreamToken,
+    enabled: !!authUser && authUser.isOnboarded,
+  });
 
   useEffect(() => {
     if (authUser && authUser.isOnboarded) {
@@ -28,6 +41,44 @@ export default function App() {
       disconnectSocket();
     }
   }, [authUser, connectSocket, disconnectSocket]);
+
+  useEffect(() => {
+    if (authUser && authUser.isOnboarded && tokenData?.token) {
+      initializeChat(
+        authUser._id,
+        authUser.fullName,
+        authUser.profilePic,
+        tokenData.token
+      );
+    }
+  }, [authUser, tokenData, initializeChat]);
+
+  useEffect(() => {
+    if (!authUser) {
+      disconnectChat();
+    }
+  }, [authUser, disconnectChat]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewFriendRequest = (requestDetails) => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+      toast.success(`${requestDetails.sender.fullName} sent you a friend request!`);
+    };
+
+    const handleFriendRequestCancelled = () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+    };
+
+    socket.on("newFriendRequest", handleNewFriendRequest);
+    socket.on("friendRequestCancelled", handleFriendRequestCancelled);
+
+    return () => {
+      socket.off("newFriendRequest", handleNewFriendRequest);
+      socket.off("friendRequestCancelled", handleFriendRequestCancelled);
+    };
+  }, [socket, queryClient]);
   if (isLoading) {
     return <Loader />;
   }

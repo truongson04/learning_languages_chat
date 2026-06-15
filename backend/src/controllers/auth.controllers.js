@@ -1,6 +1,8 @@
 import { upsertStreamUser } from "../../config/stream.js";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import cloudinary from "../../config/cloudinary.js";
+
 
 export const signup = async (req, res) => {
   try {
@@ -82,7 +84,7 @@ export const logout = (req, res) => {
 export const onboard = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { fullName, bio, nativeLanguage, learningLanguage, location } =
+    let { fullName, bio, nativeLanguage, learningLanguage, location, profilePic } =
       req.body;
     if (
       !fullName ||
@@ -93,12 +95,35 @@ export const onboard = async (req, res) => {
     ) {
       return res.status(400).json({ message: "Some fields are missing" });
     }
+
+    if (profilePic && profilePic.startsWith("data:image/")) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+          folder: "learning_languages_avatars",
+        });
+        profilePic = uploadResponse.secure_url;
+      } catch (uploadError) {
+        console.error("Cloudinary upload error:", uploadError);
+        return res.status(500).json({ message: "Error uploading image to Cloudinary" });
+      }
+    }
+
+    const updateData = {
+      fullName,
+      bio,
+      nativeLanguage,
+      learningLanguage,
+      location,
+      isOnboarded: true,
+    };
+
+    if (profilePic !== undefined) {
+      updateData.profilePic = profilePic;
+    }
+
     const updated = await User.findByIdAndUpdate(
       userId,
-      {
-        ...req.body,
-        isOnboarded: true,
-      },
+      updateData,
       { new: true },
     );
     if (!updated) {

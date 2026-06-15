@@ -2,11 +2,19 @@ import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser.js";
 import logoHanu from "/logo hanu.png";
 import { BellIcon, HomeIcon, UserIcon } from "lucide-react";
+import useNotification from "../hooks/useNotification.js";
+import useChatStore from "../store/useChatStore.js";
+
 
 export default function Sidebar() {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { friendRequests } = useNotification();
+  const { unreadCount } = useChatStore();
+
+  const hasPendingRequests = friendRequests?.request?.length > 0;
+  const hasNotifications = hasPendingRequests || unreadCount > 0;
 
   return (
     <aside className="w-64 bg-base-200 border-r border-base-300  lg:flex flex-col h-screen sticky top-0 ">
@@ -37,7 +45,12 @@ export default function Sidebar() {
           to="/notifications"
           className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath == "/notifications" ? "btn-active" : ""}`}
         >
-          <BellIcon className="size-5 text-base-content opacity-70" />
+          <div className="indicator">
+            {hasNotifications && (
+              <span className="indicator-item badge badge-error badge-xs translate-x-1.5 translate-y-[-1.5px]"></span>
+            )}
+            <BellIcon className="size-5 text-base-content opacity-70" />
+          </div>
           <span>Notifications</span>
         </Link>
       </nav>

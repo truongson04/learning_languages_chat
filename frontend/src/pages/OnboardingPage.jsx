@@ -27,10 +27,27 @@ export default function OnBoardingPage() {
       toast.error(error.response.data.message);
     },
   });
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormState((prev) => ({ ...prev, profilePic: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     mutate(formState);
   };
+
 
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 w-full">
@@ -43,19 +60,35 @@ export default function OnBoardingPage() {
             onSubmit={handleSubmit}
             className="space-y-6  box-border w-full"
           >
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="size-32 rounded-full bg-base-300 overflow-hidden">
-                {formState.profilePic ? (
-                  <img
-                    src={formState.profilePic}
-                    className="w-full h-full object-cover"
+            <div className="flex flex-col items-center justify-center space-y-2">
+              <div className="relative group">
+                <div className="size-32 rounded-full bg-base-300 overflow-hidden border-4 border-primary/20 hover:border-primary/50 transition-all duration-300">
+                  {formState.profilePic ? (
+                    <img
+                      src={formState.profilePic}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <CameraIcon className="size-12 text-base-content opacity-40" />
+                    </div>
+                  )}
+                </div>
+                <label
+                  htmlFor="avatar-input"
+                  className="absolute bottom-0 right-0 bg-primary text-primary-content p-2.5 rounded-full cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
+                >
+                  <CameraIcon className="size-5" />
+                  <input
+                    type="file"
+                    id="avatar-input"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
                   />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <CameraIcon className="size-12 text-base-content opacity-40" />
-                  </div>
-                )}
+                </label>
               </div>
+              <p className="text-xs opacity-60">Click the camera icon to upload (Max 5MB)</p>
             </div>
             <div className="form-control">
               <label className="label">

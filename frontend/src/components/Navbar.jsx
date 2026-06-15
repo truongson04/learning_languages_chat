@@ -6,12 +6,20 @@ import useLogout from "../hooks/useLogout.js";
 import logoHanu from "/logo hanu.png";
 import { BellIcon, LogOutIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector.jsx";
+import useNotification from "../hooks/useNotification.js";
+import useChatStore from "../store/useChatStore.js";
+
 
 export default function NavBar() {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const queryClient = useQueryClient();
   const { logoutMutate, error } = useLogout();
+  const { friendRequests } = useNotification();
+  const { unreadCount } = useChatStore();
+
+  const hasPendingRequests = friendRequests?.request?.length > 0;
+  const hasNotifications = hasPendingRequests || unreadCount > 0;
 
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
@@ -28,9 +36,11 @@ export default function NavBar() {
             </div>
           )}
           <div className="flex items-center gap-3 sm:gap-4 ">
-            <Link to="/notifications">
+            <Link to="/notifications" className="indicator">
+              {hasNotifications && (
+                <span className="indicator-item badge badge-error badge-xs translate-y-[4px]"></span>
+              )}
               <button className="btn btn-ghost btn-circle">
-                {" "}
                 <BellIcon className="h-6 w-6 text-base-content opacity-70" />
               </button>
             </Link>
