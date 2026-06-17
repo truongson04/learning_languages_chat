@@ -43,8 +43,8 @@ export default function HomePage() {
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="">
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                  Meet new learner{" "}
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                  Meet new learners{" "}
                 </h2>
                 <p className="opacity-70">
                   Discover perfect language exchange partners based on profile
@@ -71,7 +71,7 @@ export default function HomePage() {
                 return (
                   <div
                     key={user._id}
-                    className="card bg-base-200 hover:shadow-lg transition-all duration-300"
+                    className="card bg-base-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                   >
                     <div className="card-body p-5 space-y-4">
                       <div className="flex items-center gap-3">

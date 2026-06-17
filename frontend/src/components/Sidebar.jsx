@@ -17,7 +17,7 @@ export default function Sidebar() {
   const hasNotifications = hasPendingRequests || unreadCount > 0;
 
   return (
-    <aside className="w-64 bg-base-200 border-r border-base-300  lg:flex flex-col h-screen sticky top-0 ">
+    <aside className="w-72 bg-base-200 border-r border-base-300 flex flex-col h-full min-h-screen">
       <div className="p-5 border-b border-base-300">
         <Link to="/">
           <img src={logoHanu} className="size-9 text-primary" />

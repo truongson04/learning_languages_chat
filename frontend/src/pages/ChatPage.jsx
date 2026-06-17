@@ -60,7 +60,7 @@ export default function ChatPage() {
     return <ChatLoader />;
   }
   return (
-    <div className="h-[93vh]">
+    <div className="h-[calc(100vh-4rem)]">
       <Chat client={chatClient}>
         <Channel channel={channel} cus>
           <div className="w-full relative">

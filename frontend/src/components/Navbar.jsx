@@ -8,9 +8,9 @@ import { BellIcon, LogOutIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector.jsx";
 import useNotification from "../hooks/useNotification.js";
 import useChatStore from "../store/useChatStore.js";
+import { Menu } from "lucide-react";
 
-
-export default function NavBar() {
+export default function NavBar({ showSideBar }) {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -22,20 +22,42 @@ export default function NavBar() {
   const hasNotifications = hasPendingRequests || unreadCount > 0;
 
   return (
-    <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 ">
-        <div className="flex items-center justify-end w-full ">
-          {location.pathname == "/chat" && (
-            <div className="pl-5">
+    <nav className="bg-base-200/80 backdrop-blur-md border-b border-base-300 sticky top-0 z-30 h-16 flex items-center w-full">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center lg:hidden gap-2">
+            {showSideBar && (
+              <label
+                htmlFor="main-drawer"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost btn-sm"
+              >
+                <Menu className="h-5 w-5" />
+              </label>
+            )}
+            <Link to="/" className="flex items-center gap-2">
+              <span className="text-2xl font-bold font-mono bg-clip-text text-transparent bg-linear-to-r from-red-700 to-red-500 tracking-wider">
+                HANU
+              </span>
+            </Link>
+          </div>
+
+          <div className="hidden lg:flex items-center">
+            {location.pathname === "/chat" && (
               <Link to="/" className="flex items-center gap-2.5">
-                <img src={logoHanu} className="size-9 text-primary" />
+                <img
+                  src={logoHanu}
+                  className="size-9 text-primary"
+                  alt="logo"
+                />
                 <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-linear-to-r from-red-700 to-red-500 tracking-wider">
                   HANU
                 </span>
               </Link>
-            </div>
-          )}
-          <div className="flex items-center gap-3 sm:gap-4 ">
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto">
             <Link to="/notifications" className="indicator">
               {hasNotifications && (
                 <span className="indicator-item badge badge-error badge-xs translate-y-[4px]"></span>

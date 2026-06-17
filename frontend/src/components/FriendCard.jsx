@@ -6,7 +6,7 @@ export default function FriendCard({ friend }) {
   const { onlineUsers } = useSocketStore();
   const isOnline = onlineUsers.includes(friend._id);
   return (
-    <div className="card bg-base-200 hover:shadow-md transition-shadow">
+    <div className="card bg-base-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
       <div className="card-body p-4 ">
         <div className="flex items-center gap-3 mb-3 ">
           <div className="flex flex-col gap-1">
