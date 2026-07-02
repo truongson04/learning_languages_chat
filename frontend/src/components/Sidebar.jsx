@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser.js";
 import logoHanu from "/logo hanu.png";
-import { BellIcon, HomeIcon, UserIcon } from "lucide-react";
+import { BellIcon, HomeIcon, UserIcon, MessageSquareIcon } from "lucide-react";
 import useNotification from "../hooks/useNotification.js";
 import useChatStore from "../store/useChatStore.js";
 
@@ -40,6 +40,13 @@ export default function Sidebar() {
         >
           <UserIcon className="size-5 text-base-content opacity-70" />
           <span>Friends</span>
+        </Link>
+        <Link
+          to="/messages"
+          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath == "/messages" ? "btn-active" : ""}`}
+        >
+          <MessageSquareIcon className="size-5 text-base-content opacity-70" />
+          <span>Messages</span>
         </Link>
         <Link
           to="/notifications"

@@ -7,6 +7,7 @@ import CallPage from "./pages/CallPage";
 import ChatPage from "./pages/ChatPage";
 import OnBoardingPage from "./pages/OnboardingPage";
 import FriendsPage from "./pages/FriendsPage";
+import MessagesPage from "./pages/MessagesPage";
 import { toast, Toaster } from "react-hot-toast";
 
 import useAuthUser from "./hooks/useAuthUser.js";
@@ -105,6 +106,18 @@ export default function App() {
               authUser && authUser.isOnboarded ? (
                 <Layout>
                   <FriendsPage />
+                </Layout>
+              ) : (
+                <Navigate to={authUser ? "/onboarding" : "/login"} />
+              )
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              authUser && authUser.isOnboarded ? (
+                <Layout>
+                  <MessagesPage />
                 </Layout>
               ) : (
                 <Navigate to={authUser ? "/onboarding" : "/login"} />

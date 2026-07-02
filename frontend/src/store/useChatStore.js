@@ -26,7 +26,6 @@ const useChatStore = create((set, get) => ({
         unreadCount: client.user.unread_channels || 0,
       });
 
-      // Listen for new messages globally
       client.on("message.new", (event) => {
         if (event.user.id !== userId) {
           set((state) => ({ unreadCount: state.unreadCount + 1 }));

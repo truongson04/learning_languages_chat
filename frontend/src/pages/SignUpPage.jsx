@@ -132,7 +132,7 @@ export default function SignUpPage() {
             <div className="relative aspect-square max-w-sm mx-auto">
               <img
                 className="w-ful h-full object-contain "
-                src="https://pictures.tribuna.com/image/d4b4d078-3a54-46c5-9c21-6886e119718d?width=1920&quality=70"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9kyMSnxoggwuuU0gMp07kDgV6gRbXp327e4DgqtHAJg&s=10"
               />
             </div>
             <div className="text-center space-y-3 mt-6">

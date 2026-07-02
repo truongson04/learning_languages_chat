@@ -39,10 +39,19 @@ export default function ChatPage() {
     const setupChannel = async () => {
       setLoading(true);
       try {
-        const channelId = [authUser._id, targetUserId].sort().join("-");
-        const currentChannel = chatClient.channel("messaging", channelId, {
-          members: [authUser._id, targetUserId],
-        });
+        let channelId;
+        let currentChannel;
+
+        if (targetUserId.includes("-") || targetUserId.startsWith("group-")) {
+          channelId = targetUserId;
+          currentChannel = chatClient.channel("messaging", channelId);
+        } else {
+          channelId = [authUser._id, targetUserId].sort().join("-");
+          currentChannel = chatClient.channel("messaging", channelId, {
+            members: [authUser._id, targetUserId],
+          });
+        }
+        
         await currentChannel.watch();
         setChannel(currentChannel);
       } catch (error) {

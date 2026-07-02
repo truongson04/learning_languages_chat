@@ -109,7 +109,7 @@ export default function LoginPage() {
           <div className="max-w-md p-8">
             <div className="relative aspect-square max-w-sm mx-auto">
               <img
-                src="https://img.allfootballapp.com/www/M00/70/D9/720x-/-/-/rB8CLF5bPbqAYMfEAAX_hdhzLec099.png.webp"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9kyMSnxoggwuuU0gMp07kDgV6gRbXp327e4DgqtHAJg&s=10"
                 alt="Language connection illustration"
                 className="w-full h-full object-contain"
               />

@@ -38,7 +38,6 @@ export default function HomePage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 ">
       <div className="container mx-auto space-y-10 ">
-
         <section>
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -65,7 +64,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {recommendedUsers?.map((user) => {
+              {recommendedUsers?.map((user) => {
                 const checkRequestSent = !!outgoingRequestMap[user._id];
 
                 return (
@@ -78,7 +77,7 @@ export default function HomePage() {
                         <img
                           src={user.profilePic}
                           alt={user.fullName}
-                          className="avatar size-16 rounded-full"
+                          className="avatar size-16 rounded-full object-cover"
                         />
 
                         <div>
@@ -111,7 +110,9 @@ export default function HomePage() {
                       {checkRequestSent ? (
                         <button
                           className="btn btn-outline btn-error w-full mt-2"
-                          onClick={() => cancelRequestMutation(outgoingRequestMap[user._id])}
+                          onClick={() =>
+                            cancelRequestMutation(outgoingRequestMap[user._id])
+                          }
                           disabled={isCancelPending}
                         >
                           <XCircleIcon className="size-4 mr-2" />

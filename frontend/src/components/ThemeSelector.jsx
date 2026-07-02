@@ -21,7 +21,7 @@ export default function ThemeSelector() {
                 className={`w-full px-4 py-3 rounded-full flex items-center gap-3 transition-colors ${theme == themeColor.name ? "bg-primary/10 text-primary" : "hover:bg-base-content/5"}`}
                 onClick={() => {
                   if (theme === themeColor.name) {
-                    setTheme("retro");
+                    setTheme("light");
                     return;
                   }
                   setTheme(themeColor.name);
